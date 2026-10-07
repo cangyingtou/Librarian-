@@ -3,21 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>校园图书屋</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: SimSun; background: #F2F2F2; }
-    header { background: #2F5496; color: white; text-align: center; padding: 20px; }
-    nav { background: white; text-align: center; padding: 10px; }
-    nav a { color: #2F5496; text-decoration: none; margin: 0 15px; }
-    main { width: 1100px; margin: 0 auto; padding: 20px; overflow: hidden; }
-    .search-bar { background: white; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
-    .search-bar input { width: 250px; padding: 6px; }
-    .card-list::after { content: ""; display: block; clear: both; }
-    .book { float: left; width: 30%; margin: 1.5%; padding: 16px; border: 1px solid #ccc; background: white; text-align: center; }
-    .cover-box { height: 100px; line-height: 100px; background: #A6C1E0; margin-bottom: 10px; }
-    .book-price { color: #E67E22; font-weight: bold; }
-    footer { clear: both; background: #2F5496; color: white; text-align: center; padding: 15px; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
@@ -63,10 +49,49 @@
         <p class="author-name">作者：阿尔弗雷德·阿霍</p>
         <p class="book-price">¥ 59.00</p>
       </article>
+      <article class="book">
+        <div class="cover-box">封面</div>
+        <h3>计算机网络</h3>
+        <p class="author-name">作者：谢希仁</p>
+        <p class="book-price">¥ 52.00</p>
+      </article>
+      <article class="book">
+        <div class="cover-box">封面</div>
+        <h3>设计模式</h3>
+        <p class="author-name">作者：埃里希·伽玛</p>
+        <p class="book-price">¥ 58.00</p>
+      </article>
+      <article class="book">
+        <div class="cover-box">封面</div>
+        <h3>西游记</h3>
+        <p class="author-name">作者：吴承恩</p>
+        <p class="book-price">¥ 42.00</p>
+      </article>
       </div>
     </section>
     <aside id="about">
-      <h3>分类导航</h3>
+      <section class="side-panel">
+        <h3>分类导航</h3>
+        <ul>
+          <li>计算机</li>
+          <li>文学</li>
+          <li>历史</li>
+          <li>经济管理</li>
+        </ul>
+      </section>
+      <section class="side-panel">
+        <h3>本周热榜</h3>
+        <ol>
+          <li>深入理解计算机系统</li>
+          <li>Python 编程从入门到实践</li>
+          <li>西游记</li>
+          <li>设计模式</li>
+        </ol>
+      </section>
+      <section class="side-panel">
+        <h3>借阅须知</h3>
+        <p>凭校园卡借阅，每人限借 5 本，借期 30 天。</p>
+      </section>
     </aside>
   </main>
   <footer>
