@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>校园图书屋</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: SimSun; background: #F2F2F2; }
+    header { background: #2F5496; color: white; text-align: center; padding: 20px; }
+    nav { background: white; text-align: center; padding: 10px; }
+    nav a { color: #2F5496; text-decoration: none; margin: 0 15px; }
+    main { width: 1100px; margin: 0 auto; padding: 20px; overflow: hidden; }
+    .search-bar { background: white; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+    .search-bar input { width: 250px; padding: 6px; }
+    .card-list::after { content: ""; display: block; clear: both; }
+    .book { float: left; width: 30%; margin: 1.5%; padding: 16px; border: 1px solid #ccc; background: white; text-align: center; }
+    .cover-box { height: 100px; line-height: 100px; background: #A6C1E0; margin-bottom: 10px; }
+    .book-price { color: #E67E22; font-weight: bold; }
+    footer { clear: both; background: #2F5496; color: white; text-align: center; padding: 15px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>校园图书屋</h1>
+  </header>
+  <nav>
+    <a href="index.html">首页</a>
+    <a href="search.html">检索</a>
+    <a href="#about">关于</a>
+  </nav>
+  <main>
+    <section class="search-bar">
+      <form action="/search" method="get">
+        <label for="kw">书名关键字</label>
+        <input None>
+        <label for="type">图书分类</label>
+        <select id="type" name="type">
+          <option>全部</option>
+          <option>计算机</option>
+          <option>文学</option>
+        </select>
+        <button type="submit">检索</button>
+      </form>
+    </section>
+    <section class="book-area">
+      <h2>新书推荐</h2>
+      <div class="card-list">
+      <article class="book">
+        <div class="cover-box">封面</div>
+        <h3>Python 编程从入门到实践</h3>
+        <p class="author-name">作者：埃里克·马瑟斯</p>
+        <p class="book-price">¥ 89.00</p>
+      </article>
+      <article class="book">
+        <div class="cover-box">封面</div>
+        <h3>深入理解计算机系统</h3>
+        <p class="author-name">作者：兰德尔·布莱恩特</p>
+        <p class="book-price">¥ 139.00</p>
+      </article>
+      <article class="book">
+        <div class="cover-box">封面</div>
+        <h3>编译原理</h3>
+        <p class="author-name">作者：阿尔弗雷德·阿霍</p>
+        <p class="book-price">¥ 59.00</p>
+      </article>
+      </div>
+    </section>
+    <aside id="about">
+      <h3>分类导航</h3>
+    </aside>
+  </main>
+  <footer>
+    <p>版权所有 © 2026 校园图书屋</p>
+  </footer>
+</body>
+</html>
