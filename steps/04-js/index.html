@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校园图书屋 · JS 交互版</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">校园图书屋</a>
+    <nav class="site-nav">
+      <a href="#search">检索</a>
+      <a href="#books">新书</a>
+      <a href="#about">关于</a>
+    </nav>
+    <div class="header-tools">
+      <!-- 案例 A：暗色模式开关（classList.toggle） -->
+      <button id="modeBtn" class="mode-btn" type="button">🌙 暗色</button>
+      <!-- 案例 B：购物车计数器，真相存在 count 变量里 -->
+      <span id="cart" class="cart">购物车 (0)</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="search-bar" id="search">
+      <form action="/search" method="get">
+        <label for="kw">书名关键字</label>
+        <input type="text" id="kw" name="kw" placeholder="例如：计算机网络">
+        <label for="type">图书分类</label>
+        <select id="type" name="type">
+          <option>全部</option>
+          <option>计算机</option>
+          <option>文学</option>
+        </select>
+        <button type="submit">检索</button>
+      </form>
+    </section>
+
+    <section class="book-area" id="books">
+      <h2>新书推荐</h2>
+      <div class="book-list">
+        <article class="book-card">
+          <span class="badge-new">NEW</span>
+          <div class="cover-box">Python</div>
+          <h3>Python 编程从入门到实践</h3>
+          <p class="author-name">作者：埃里克·马瑟斯</p>
+          <p class="book-price">¥ 89.00</p>
+          <button class="add-btn" type="button">加入购物车</button>
+        </article>
+        <article class="book-card">
+          <div class="cover-box">CSAPP</div>
+          <h3>深入理解计算机系统</h3>
+          <p class="author-name">作者：兰德尔·布莱恩特</p>
+          <p class="book-price">¥ 139.00</p>
+          <button class="add-btn" type="button">加入购物车</button>
+        </article>
+        <article class="book-card">
+          <div class="cover-box">编译</div>
+          <h3>编译原理</h3>
+          <p class="author-name">作者：阿尔弗雷德·阿霍</p>
+          <p class="book-price">¥ 59.00</p>
+          <button class="add-btn" type="button">加入购物车</button>
+        </article>
+        <article class="book-card">
+          <div class="cover-box">网络</div>
+          <h3>计算机网络</h3>
+          <p class="author-name">作者：谢希仁</p>
+          <p class="book-price">¥ 52.00</p>
+          <button class="add-btn" type="button">加入购物车</button>
+        </article>
+        <article class="book-card">
+          <div class="cover-box">设计</div>
+          <h3>设计模式</h3>
+          <p class="author-name">作者：埃里希·伽玛</p>
+          <p class="book-price">¥ 58.00</p>
+          <button class="add-btn" type="button">加入购物车</button>
+        </article>
+        <article class="book-card">
+          <span class="badge-new">NEW</span>
+          <div class="cover-box">西游</div>
+          <h3>西游记</h3>
+          <p class="author-name">作者：吴承恩</p>
+          <p class="book-price">¥ 42.00</p>
+          <button class="add-btn" type="button">加入购物车</button>
+        </article>
+      </div>
+    </section>
+
+    <aside id="about">
+      <section class="side-panel">
+        <h3>分类导航</h3>
+        <ul>
+          <li>计算机</li>
+          <li>文学</li>
+          <li>历史</li>
+          <li>经济管理</li>
+        </ul>
+      </section>
+      <section class="side-panel">
+        <h3>本周热榜</h3>
+        <ol>
+          <li>深入理解计算机系统</li>
+          <li>Python 编程从入门到实践</li>
+          <li>西游记</li>
+          <li>设计模式</li>
+        </ol>
+      </section>
+      <section class="side-panel">
+        <h3>借阅须知</h3>
+        <p>凭校园卡借阅，每人限借 5 本，借期 30 天。</p>
+      </section>
+    </aside>
+  </main>
+
+  <!-- 动手②：回到顶部按钮（position: fixed 钉在右下角） -->
+  <button id="topBtn" class="to-top" type="button" title="回到顶部">↑</button>
+
+  <footer>
+    <p>版权所有 © 2026 校园图书屋</p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

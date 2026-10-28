@@ -1,0 +1,157 @@
+/* ============================================================
+   第 3 次课 · Flex 重构版
+   对照 float 版：删掉 float / clear / ::after，
+   改成「骨架 column + 内部 row + wrap 网格」两层 Flex。
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+/* 套路一：整页骨架 column，main 抢走剩余空间 → footer 永远贴底 */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", SimSun, sans-serif;
+  color: #222222;
+  background: #F2F2F2;
+}
+
+/* 页头：两端对齐（动手①） */
+.site-header {
+  display: flex;
+  justify-content: space-between;  /* 品牌贴左、菜单贴右 */
+  align-items: center;             /* 交叉轴居中 */
+  padding: 16px 32px;
+  background: #2F5496;
+  color: #FFFFFF;
+}
+.brand { font-size: 22px; font-weight: bold; color: #FFFFFF; text-decoration: none; }
+
+.site-nav {
+  display: flex;
+  gap: 24px;                       /* 菜单间距交给 gap，不再算 margin */
+}
+.site-nav a { color: #E8EEF9; text-decoration: none; font-size: 15px; }
+.site-nav a:hover { color: #FFFFFF; text-decoration: underline; }
+
+/* main 内部再开一层 row：搜索条占满一行，书目与侧栏并排 */
+main {
+  flex: 1;                         /* 粘底页脚的关键一行 */
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 24px;
+  width: 100%;
+  max-width: 1180px;               /* 弹性宽度：有上限地自适应 */
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+/* 搜索条：flex-basis 100% → 独占一行 */
+.search-bar {
+  flex: 1 1 100%;
+  padding: 16px;
+  background: #FFFFFF;
+  border: 1px solid #D8DEE9;
+  border-radius: 8px;
+}
+.search-bar form { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.search-bar label { font-size: 14px; color: #444444; }
+.search-bar input { width: 240px; padding: 8px; border: 1px solid #C9D2E0; border-radius: 4px; }
+.search-bar select { padding: 8px; border: 1px solid #C9D2E0; border-radius: 4px; }
+.search-bar button {
+  padding: 8px 20px;
+  color: #FFFFFF;
+  background: #E67E22;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.book-area { flex: 1 1 620px; min-width: 0; }
+.book-area h2 { margin: 0 0 16px; font-size: 20px; color: #2F5496; }
+
+/* 套路二：卡片网格 wrap + gap，卡片 flex:1 + min-width 兜底 */
+.book-list {
+  display: flex;
+  flex-wrap: wrap;                 /* 放不下就换行 */
+  gap: 20px;                       /* 行列间距一把抓 */
+}
+.book-card {
+  position: relative;              /* 父相子绝：圈出定位地盘 */
+  flex: 1;                         /* 平分剩余空间 */
+  min-width: 220px;                /* 太窄就整张搬去下一行，绝不压扁 */
+  padding: 16px;
+  text-align: center;
+  background: #FFFFFF;
+  border: 1px solid #D8DEE9;
+  border-radius: 8px;
+}
+.book-card h3 { height: 44px; margin: 8px 0; overflow: hidden; font-size: 15px; line-height: 22px; }
+.cover-box {
+  height: 120px;
+  line-height: 120px;
+  color: #2F5496;
+  background: linear-gradient(135deg, #A6C1E0, #D6E4F0);
+  border-radius: 6px;
+}
+.author-name { margin: 0 0 6px; color: #666666; font-size: 13px; }
+.book-price { margin: 0; font-weight: bold; color: #E67E22; }
+
+/* 加分项：绝对定位角标 + z-index */
+.badge-new {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;                      /* 盖在封面之上 */
+  padding: 2px 8px;
+  font-size: 12px;
+  color: #FFFFFF;
+  background: #E67E22;
+  border-radius: 10px;
+}
+
+aside { flex: 0 0 268px; }         /* 侧栏固定宽度，不参与伸缩 */
+.side-panel {
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #FFFFFF;
+  border: 1px solid #D8DEE9;
+  border-radius: 8px;
+}
+.side-panel h3 {
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  font-size: 15px;
+  color: #2F5496;
+  border-bottom: 1px solid #E4E9F2;
+}
+.side-panel ul, .side-panel ol { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.9; }
+.side-panel p { margin: 0; font-size: 14px; line-height: 1.8; color: #555555; }
+
+footer {
+  padding: 16px;
+  color: #FFFFFF;
+  text-align: center;
+  background: #2F5496;
+  font-size: 14px;
+}
+
+/* ============================================================
+   响应式三步法第 3 步：窄屏覆盖
+   平板 601–991px：侧栏整块下移，卡片自动变两列
+   手机 ≤600px：卡片单列
+   ============================================================ */
+@media (max-width: 991px) {
+  aside { flex: 1 1 100%; }        /* 侧栏移到书目下方 */
+  .book-card { min-width: 200px; }
+}
+
+@media (max-width: 600px) {
+  .site-header { flex-direction: column; gap: 10px; padding: 14px 16px; }
+  .search-bar form { flex-direction: column; align-items: stretch; }
+  .search-bar input { width: 100%; }
+  .book-list { flex-direction: column; }   /* 单列 */
+  .book-card { min-width: 0; }             /* 解除下限，否则单列也不生效 */
+}

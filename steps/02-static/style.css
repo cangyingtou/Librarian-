@@ -1,3 +1,4 @@
+/* 第 2 次课 · float 版样式（保留原样，作为「重构前」的对照） */
 * { box-sizing: border-box; }
 body { margin: 0; font-family: SimSun; background: #F2F2F2; }
 header { text-align: center; padding: 20px; background: #2F5496; color: white; }

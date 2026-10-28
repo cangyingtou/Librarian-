@@ -1,0 +1,228 @@
+/* ============================================================
+   第 4 次课 · JS 交互版
+   在第 3 次课的 Flex 样式上追加三块：
+   ① 页头工具区（暗色开关 + 购物车计数）
+   ② 卡片按钮
+   ③ fixed 回到顶部 + body.dark 暗色变量
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", SimSun, sans-serif;
+  color: #222222;
+  background: #F2F2F2;
+  transition: background 0.25s, color 0.25s;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 32px;
+  background: #2F5496;
+  color: #FFFFFF;
+}
+.brand { font-size: 22px; font-weight: bold; color: #FFFFFF; text-decoration: none; }
+.site-nav { display: flex; gap: 24px; }
+.site-nav a { color: #E8EEF9; text-decoration: none; font-size: 15px; }
+.site-nav a:hover { color: #FFFFFF; text-decoration: underline; }
+
+.header-tools { display: flex; align-items: center; gap: 12px; }
+.mode-btn {
+  padding: 6px 14px;
+  font-size: 14px;
+  color: #2F5496;
+  background: #FFFFFF;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.cart {
+  padding: 6px 14px;
+  font-size: 14px;
+  color: #2F5496;
+  background: #E8EEF9;
+  border-radius: 16px;
+  white-space: nowrap;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 24px;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+.search-bar {
+  flex: 1 1 100%;
+  padding: 16px;
+  background: #FFFFFF;
+  border: 1px solid #D8DEE9;
+  border-radius: 8px;
+}
+.search-bar form { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.search-bar label { font-size: 14px; color: #444444; }
+.search-bar input { width: 240px; padding: 8px; border: 1px solid #C9D2E0; border-radius: 4px; }
+.search-bar select { padding: 8px; border: 1px solid #C9D2E0; border-radius: 4px; }
+.search-bar button {
+  padding: 8px 20px;
+  color: #FFFFFF;
+  background: #E67E22;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.book-area { flex: 1 1 620px; min-width: 0; }
+.book-area h2 { margin: 0 0 16px; font-size: 20px; color: #2F5496; }
+
+.book-list { display: flex; flex-wrap: wrap; gap: 20px; }
+.book-card {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 220px;
+  max-width: calc((100% - 40px) / 3); /* 一行最多三张 */
+  padding: 16px;
+  text-align: center;
+  background: #FFFFFF;
+  border: 1px solid #D8DEE9;
+  border-radius: 8px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.book-card:hover { box-shadow: 0 6px 18px rgba(47, 84, 150, 0.16); transform: translateY(-2px); }
+.book-card h3 { height: 44px; margin: 8px 0; overflow: hidden; font-size: 15px; line-height: 22px; }
+.cover-box {
+  height: 120px;
+  line-height: 120px;
+  color: #2F5496;
+  background: linear-gradient(135deg, #A6C1E0, #D6E4F0);
+  border-radius: 6px;
+}
+.author-name { margin: 0 0 6px; color: #666666; font-size: 13px; }
+.book-price { margin: 0; font-weight: bold; color: #E67E22; }
+
+.add-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  font-size: 14px;
+  color: #2F5496;
+  background: #FFFFFF;
+  border: 1px solid #2F5496;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.add-btn:hover { color: #FFFFFF; background: #2F5496; }
+.add-btn:active { transform: scale(0.98); }
+
+.badge-new {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  padding: 2px 8px;
+  font-size: 12px;
+  color: #FFFFFF;
+  background: #E67E22;
+  border-radius: 10px;
+}
+
+aside { flex: 0 0 268px; }
+.side-panel {
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #FFFFFF;
+  border: 1px solid #D8DEE9;
+  border-radius: 8px;
+}
+.side-panel h3 {
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  font-size: 15px;
+  color: #2F5496;
+  border-bottom: 1px solid #E4E9F2;
+}
+.side-panel ul, .side-panel ol { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.9; }
+.side-panel p { margin: 0; font-size: 14px; line-height: 1.8; color: #555555; }
+
+/* 动手②：固定定位（不随滚动移动），层级低于弹窗 */
+.to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10;
+  width: 46px;
+  height: 46px;
+  font-size: 20px;
+  color: #FFFFFF;
+  background: #2F5496;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+.to-top.show { opacity: 1; visibility: visible; }
+
+footer {
+  padding: 16px;
+  color: #FFFFFF;
+  text-align: center;
+  background: #2F5496;
+  font-size: 14px;
+}
+
+/* 案例 A：暗色样式先写好，默认不生效 —— JS 只在 body 上切一个类名 */
+body.dark { background: #1A2230; color: #E5E7EB; }
+body.dark .site-header,
+body.dark footer { background: #0F1A2B; }
+body.dark .search-bar,
+body.dark .book-card,
+body.dark .side-panel { background: #22304A; border-color: #3A4A66; }
+body.dark .book-area h2,
+body.dark .book-card h3,
+body.dark .side-panel h3 { color: #DCE6F5; border-color: #3A4A66; }
+body.dark .author-name,
+body.dark .side-panel p { color: #A9B6CA; }
+body.dark .search-bar label { color: #C7D2E4; }
+body.dark .search-bar input,
+body.dark .search-bar select {
+  color: #E5E7EB;
+  background: #1A2230;
+  border-color: #3A4A66;
+}
+body.dark .cover-box { color: #DCE6F5; background: linear-gradient(135deg, #2E4670, #3C5A8A); }
+body.dark .add-btn {
+  color: #DCE6F5;
+  background: transparent;
+  border-color: #6E85AD;
+}
+body.dark .add-btn:hover { color: #0F1A2B; background: #DCE6F5; }
+body.dark .to-top { background: #3A4A66; }
+
+@media (max-width: 991px) {
+  aside { flex: 1 1 100%; }
+  .book-card { min-width: 260px; max-width: calc((100% - 20px) / 2); }
+}
+
+@media (max-width: 600px) {
+  .site-header { flex-direction: column; gap: 10px; padding: 14px 16px; }
+  .search-bar form { flex-direction: column; align-items: stretch; }
+  .search-bar input { width: 100%; }
+  .book-list { flex-direction: column; }
+  .book-card { min-width: 0; max-width: none; }
+}

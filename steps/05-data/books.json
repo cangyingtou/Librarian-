@@ -1,0 +1,8 @@
+[
+  { "title": "Python 编程从入门到实践", "author": "埃里克·马瑟斯", "price": 89, "category": "计算机", "cover": "Python", "inStock": true, "isNew": true },
+  { "title": "深入理解计算机系统", "author": "兰德尔·布莱恩特", "price": 139, "category": "计算机", "cover": "CSAPP", "inStock": true, "isNew": false },
+  { "title": "编译原理", "author": "阿尔弗雷德·阿霍", "price": 59, "category": "计算机", "cover": "编译", "inStock": false, "isNew": false },
+  { "title": "计算机网络", "author": "谢希仁", "price": 52, "category": "计算机", "cover": "网络", "inStock": true, "isNew": false },
+  { "title": "设计模式", "author": "埃里希·伽玛", "price": 58, "category": "计算机", "cover": "设计", "inStock": false, "isNew": false },
+  { "title": "西游记", "author": "吴承恩", "price": 42, "category": "文学", "cover": "西游", "inStock": true, "isNew": true }
+]

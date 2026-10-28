@@ -1,0 +1,475 @@
+/* ============================================================
+   校园图书屋 · Vue 版样式
+   第 2 次课的类名、第 3 次课的 Flex + 响应式原样复用，
+   新增的只有：CSS 变量（明暗两套配色）、分类导航按钮、顶部吸顶。
+   ============================================================ */
+
+* { box-sizing: border-box; }
+
+:root {
+  --brand: #0E3F8C;
+  --brand-ink: #0E3F8C;
+  --header-bg: #0E3F8C;
+  --accent: #E67E22;
+  --paper: #F4F6FA;
+  --card: #FFFFFF;
+  --line: #DCE3EE;
+  --ink: #1B2433;
+  --muted: #5F6B7D;
+  --brand-soft: #E8EEF9;
+  --cover-1: #A6C1E0;
+  --cover-2: #D6E4F0;
+  --cover-ink: #0E3F8C;
+  --stock: #2E7D32;
+  --stock-out: #B23A3A;
+  --shadow: 0 6px 18px rgba(14, 63, 140, 0.12);
+}
+
+/* 暗色只是换一套变量 —— 和老师课上「只在 body 上切一个类名」同一个思路 */
+.page.dark {
+  --header-bg: #0B1A31;
+  --brand-ink: #9CBBF0;
+  --paper: #141C2B;
+  --card: #1E2A3F;
+  --line: #33425C;
+  --ink: #E6ECF5;
+  --muted: #A6B4C9;
+  --brand-soft: #24344E;
+  --cover-1: #2E4670;
+  --cover-2: #3C5A8A;
+  --cover-ink: #DCE6F5;
+  --stock: #7BC67E;
+  --stock-out: #E38B8B;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* 骨架 column：main 抢走剩余空间 → footer 永远贴底 */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", SimSun, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* 页头：两端对齐 + 吸顶（第 3 次课 fixed 的等价写法，不用给 body 留 padding） */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 32px;
+  background: var(--header-bg);
+  color: #FFFFFF;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #FFFFFF;
+  text-decoration: none;
+}
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+}
+
+.site-nav { display: flex; gap: 26px; }
+.site-nav a {
+  position: relative;
+  padding: 4px 0;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+}
+.site-nav a:hover { color: #FFFFFF; }
+.site-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+.site-nav a:hover::after { transform: scaleX(1); }
+
+.header-tools { display: flex; align-items: center; gap: 12px; }
+.mode-btn {
+  padding: 6px 14px;
+  font-size: 14px;
+  color: var(--brand);
+  background: #FFFFFF;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.mode-btn:hover { background: var(--brand-soft); }
+.cart {
+  padding: 6px 14px;
+  font-size: 14px;
+  color: var(--brand);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* main 内部再开一层 row：搜索条独占一行，书目与侧栏并排 */
+main {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 24px;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.search-bar {
+  flex: 1 1 100%;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.search-bar form { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.search-bar label { font-size: 14px; color: var(--muted); }
+.search-bar input {
+  width: 260px;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.search-bar select {
+  padding: 9px 12px;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.search-bar input:focus,
+.search-bar select:focus { outline: 2px solid var(--brand-ink); outline-offset: 1px; }
+.search-bar button[type="submit"] {
+  padding: 9px 22px;
+  font-size: 14px;
+  color: #FFFFFF;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.search-bar button[type="submit"]:hover { filter: brightness(1.06); }
+
+.book-area { flex: 1 1 620px; min-width: 0; }
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.book-area h2 { margin: 0; font-size: 20px; color: var(--brand-ink); }
+.result-count { font-size: 13px; color: var(--muted); }
+
+/* 卡片网格：wrap + gap，卡片 flex:1 + min-width 兜底 */
+.book-list { display: flex; flex-wrap: wrap; gap: 20px; }
+.book-card {
+  position: relative;
+  flex: 1 1 220px;
+  min-width: 220px;
+  max-width: calc((100% - 40px) / 3); /* 一行最多三张，筛选后卡片不会被拉宽 */
+  padding: 16px;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.book-card:hover {
+  box-shadow: var(--shadow);
+  border-color: var(--brand-ink);
+  transform: translateY(-3px);
+}
+.book-card h3 {
+  height: 44px;
+  margin: 10px 0 6px;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 22px;
+}
+.cover-box {
+  height: 132px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--cover-ink);
+  background: linear-gradient(135deg, var(--cover-1), var(--cover-2));
+  border-radius: 8px;
+}
+.author-name { margin: 0 0 6px; font-size: 13px; color: var(--muted); }
+.book-price { margin: 0; font-weight: 700; color: var(--accent); }
+
+.stock {
+  display: inline-block;
+  margin: 8px 0 2px;
+  padding: 2px 10px;
+  font-size: 12px;
+  color: var(--stock);
+  background: color-mix(in srgb, var(--stock) 12%, transparent);
+  border-radius: 999px;
+}
+.stock.out { color: var(--stock-out); background: color-mix(in srgb, var(--stock-out) 12%, transparent); }
+
+.add-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 9px;
+  font-size: 14px;
+  color: var(--brand-ink);
+  background: transparent;
+  border: 1px solid var(--brand-ink);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.add-btn:hover { color: #FFFFFF; background: var(--brand); }
+.page.dark .add-btn:hover { color: #0B1A31; background: var(--brand-ink); }
+.add-btn:active { transform: scale(0.98); }
+
+.badge-new {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  padding: 2px 8px;
+  font-size: 12px;
+  color: #FFFFFF;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.empty {
+  flex: 1 1 100%;
+  margin: 0;
+  padding: 56px 16px;
+  text-align: center;
+  color: var(--muted);
+  background: var(--card);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+}
+
+aside { flex: 0 0 268px; }
+.side-panel {
+  padding: 16px;
+  margin-bottom: 16px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.side-panel h3 {
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  font-size: 15px;
+  color: var(--brand-ink);
+  border-bottom: 1px solid var(--line);
+}
+.side-panel ol { margin: 0; padding-left: 20px; font-size: 14px; line-height: 1.9; }
+.side-panel p { margin: 0; font-size: 14px; line-height: 1.8; color: var(--muted); }
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.category-list button {
+  padding: 5px 12px;
+  font-size: 13px;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.category-list button:hover { border-color: var(--brand-ink); color: var(--brand-ink); }
+.category-list button.active { color: #FFFFFF; background: var(--brand); border-color: var(--brand); }
+
+.to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 15;
+  width: 46px;
+  height: 46px;
+  font-size: 20px;
+  color: #FFFFFF;
+  background: var(--brand);
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+.to-top:hover { background: var(--accent); }
+.page.dark .to-top { color: #0B1A31; background: var(--brand-ink); }
+
+footer {
+  padding: 18px 16px;
+  font-size: 14px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  background: var(--header-bg);
+}
+footer p { margin: 0; }
+
+/* 键盘可达性：所有可点元素都有可见焦点 */
+a:focus-visible,
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------- 上架新书 ---------- */
+.head-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+
+.shelved-count {
+  padding: 3px 10px;
+  font-size: 12px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.toggle-form-btn {
+  padding: 7px 14px;
+  font-size: 13px;
+  color: var(--brand-ink);
+  background: transparent;
+  border: 1px dashed var(--brand-ink);
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.toggle-form-btn:hover { background: var(--brand-soft); }
+
+.shelf-form {
+  margin: 0 0 20px;
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.shelf-form h3 { margin: 0 0 14px; font-size: 15px; color: var(--brand-ink); }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field label,
+.field .field-label { font-size: 13px; color: var(--muted); }
+.field em { font-style: normal; color: var(--stock-out); }
+.field input[type="text"],
+.field input[type="number"],
+.field select {
+  width: 100%;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.field input:focus,
+.field select:focus { outline: 2px solid var(--brand-ink); outline-offset: 1px; }
+
+.field-check { justify-content: flex-start; }
+.check-row { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; padding-top: 9px; }
+.check { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--ink); cursor: pointer; }
+.check input { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+
+.form-error { margin: 14px 0 0; font-size: 13px; color: var(--stock-out); }
+
+.form-actions { display: flex; gap: 10px; margin-top: 16px; }
+.btn-primary {
+  padding: 9px 24px;
+  font-size: 14px;
+  color: #FFFFFF;
+  background: var(--accent);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-primary:hover { filter: brightness(1.06); }
+.btn-ghost {
+  padding: 9px 18px;
+  font-size: 14px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-ghost:hover { color: var(--ink); border-color: var(--brand-ink); }
+
+/* 刚上架的那张卡闪一下，人能立刻看见 */
+@keyframes flash-in {
+  from { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 60%, transparent); }
+  to { box-shadow: 0 0 0 0 transparent; }
+}
+.book-card.flash { animation: flash-in 1.8s ease-out; border-color: var(--accent); }
+
+/* ---------- 响应式：平板侧栏下移，手机单列 ---------- */
+@media (max-width: 991px) {
+  aside { flex: 1 1 100%; }
+  .book-card { min-width: 260px; max-width: calc((100% - 20px) / 2); } /* 平板两列 */
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 600px) {
+  .site-header { flex-direction: column; gap: 10px; padding: 14px 16px; }
+  .site-nav { gap: 18px; }
+  main { padding: 16px 12px 40px; }
+  .search-bar form { flex-direction: column; align-items: stretch; }
+  .search-bar input { width: 100%; }
+  .book-list { flex-direction: column; }
+  .book-card { min-width: 0; max-width: none; }
+  .cover-box { height: 160px; }
+  .to-top { right: 16px; bottom: 16px; }
+  .section-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .head-meta { width: 100%; justify-content: space-between; }
+  .shelf-form { padding: 14px; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+
