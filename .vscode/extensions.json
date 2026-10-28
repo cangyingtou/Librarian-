@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "vue.volar",
+    "ritwickdey.liveserver",
+    "ms-ceintl.vscode-language-pack-zh-hans",
+    "esbenp.prettier-vscode",
+    "usernamehw.errorlens",
+    "sdras.vue-vscode-snippets",
+    "ecmel.vscode-html-css",
+    "formulahendry.auto-rename-tag"
+  ],
+  "unwantedRecommendations": []
+}
