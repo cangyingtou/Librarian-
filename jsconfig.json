@@ -1,0 +1,17 @@
+{
+  // 让 Volar（Vue - Official）能解析 src 里的模块路径，并给出补全与跳转
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "preserve"
+  },
+  "include": ["src/**/*", "vite.config.js"],
+  "exclude": ["node_modules", "dist", "steps"]
+}

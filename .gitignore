@@ -1,0 +1,11 @@
+# 依赖与构建产物
+node_modules/
+dist/
+.npm-cache/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
