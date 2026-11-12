@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
+import BookCard from "./components/BookCard.vue";
+import CartPanel from "./components/CartPanel.vue";
 import "./style.css"; // 第 2、3 次课的样式整包搬进项目，一个类名都不用改
 
 const shopName = ref("校园图书屋");
@@ -16,8 +18,60 @@ const books = ref([
 
 const keyword = ref("");
 const category = ref("全部");
-const cartCount = ref(0);
 const isDark = ref(false);
+
+/* ---------------- 购物车：数据住在 App.vue（状态提升） ---------------- */
+const cart = ref([]); // [{ ...book, qty }]
+
+const cartCount = computed(function () {
+  return cart.value.reduce(function (sum, item) {
+    return sum + item.qty;
+  }, 0);
+});
+
+const total = computed(function () {
+  return cart.value.reduce(function (sum, item) {
+    return sum + item.price * item.qty;
+  }, 0);
+});
+
+// 子组件只是「喊了一嗓子」，改数据是数据主人的事
+function handleAdd(book) {
+  const found = cart.value.find(function (item) {
+    return item.id === book.id;
+  });
+  if (found) {
+    found.qty = found.qty + 1; // 已在车里：数量加一
+  } else {
+    cart.value.push({ ...book, qty: 1 }); // 新书：复制一份再入车，别污染 books
+  }
+}
+
+function handleRemove(id) {
+  cart.value = cart.value.filter(function (item) {
+    return item.id !== id;
+  });
+}
+
+// 购物车里的加减：同一本书改数量，减到 0 就整行移出
+function increaseQty(id) {
+  const found = cart.value.find(function (item) {
+    return item.id === id;
+  });
+  if (found) found.qty = found.qty + 1;
+}
+
+function decreaseQty(id) {
+  const found = cart.value.find(function (item) {
+    return item.id === id;
+  });
+  if (!found) return;
+  if (found.qty > 1) {
+    found.qty = found.qty - 1;
+  } else {
+    handleRemove(id);
+  }
+}
 
 /* ---------------- 上架新书 ---------------- */
 const showForm = ref(false);
@@ -106,16 +160,66 @@ function submitBook() {
 }
 
 /* ---------------- 搜索 / 分类 ---------------- */
-const categories = computed(function () {
-  const names = books.value.map(function (b) {
+// 手动新增的分类（还没上架任何书也会先用着）
+const extraCategories = ref([]);
+const addCategoryOpen = ref(false);
+const newCategoryName = ref("");
+const categoryError = ref("");
+
+function unique(list) {
+  return list.filter(function (name, index) {
+    return list.indexOf(name) === index;
+  });
+}
+
+// 表单里能选的分类：书里已有的 + 手动加的
+const allCategories = computed(function () {
+  const used = books.value.map(function (b) {
     return b.category;
   });
-  return ["全部"].concat(
-    names.filter(function (name, index) {
-      return names.indexOf(name) === index;
-    })
-  );
+  return ["全部"].concat(unique(used.concat(extraCategories.value)));
 });
+
+// 侧栏分类导航：只列真的有书的分类，点进去不会空空如也
+const bookCategories = computed(function () {
+  const used = books.value.map(function (b) {
+    return b.category;
+  });
+  return ["全部"].concat(unique(used));
+});
+
+function toggleAddCategory() {
+  addCategoryOpen.value = !addCategoryOpen.value;
+  newCategoryName.value = "";
+  categoryError.value = "";
+}
+
+function confirmCategory() {
+  const name = newCategoryName.value.trim();
+  if (name === "") {
+    categoryError.value = "分类名不能为空";
+    return;
+  }
+  if (name === "全部") {
+    categoryError.value = "「全部」是保留项，换个名字";
+    return;
+  }
+  if (allCategories.value.indexOf(name) !== -1) {
+    categoryError.value = "这个分类已经存在了";
+    return;
+  }
+  extraCategories.value.push(name);
+  form.value.category = name; // 新增后直接选中它
+  categoryError.value = "";
+  newCategoryName.value = "";
+  addCategoryOpen.value = false;
+}
+
+function cancelCategory() {
+  addCategoryOpen.value = false;
+  newCategoryName.value = "";
+  categoryError.value = "";
+}
 
 const visibleBooks = computed(function () {
   const kw = keyword.value.trim();
@@ -126,11 +230,7 @@ const visibleBooks = computed(function () {
   });
 });
 
-/* ---------------- 购物车 / 回到顶部 ---------------- */
-function addToCart() {
-  cartCount.value++; // script 里改值必须写 .value
-}
-
+/* ---------------- 回到顶部 ---------------- */
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -168,7 +268,7 @@ function scrollToTop() {
 
           <label for="type">图书分类</label>
           <select id="type" v-model="category">
-            <option v-for="name in categories" :key="name" :value="name">{{ name }}</option>
+            <option v-for="name in allCategories" :key="name" :value="name">{{ name }}</option>
           </select>
 
           <button type="submit">检索</button>
@@ -209,9 +309,35 @@ function scrollToTop() {
 
             <div class="field">
               <label for="nb-category">分类</label>
-              <select id="nb-category" v-model="form.category">
-                <option v-for="name in categories.slice(1)" :key="name" :value="name">{{ name }}</option>
-              </select>
+              <div class="select-with-add">
+                <select id="nb-category" v-model="form.category">
+                  <option v-for="name in allCategories.slice(1)" :key="name" :value="name">
+                    {{ name }}
+                  </option>
+                </select>
+                <button
+                  class="mini-btn"
+                  type="button"
+                  :title="addCategoryOpen ? '收起新分类' : '新增分类'"
+                  @click="toggleAddCategory"
+                >
+                  ＋
+                </button>
+              </div>
+
+              <!-- 内联新增分类：加完自动选中，不用先跑去别处维护 -->
+              <div v-if="addCategoryOpen" class="new-category">
+                <input
+                  v-model="newCategoryName"
+                  type="text"
+                  maxlength="10"
+                  placeholder="新分类，如：历史"
+                  @keydown.enter.prevent="confirmCategory"
+                />
+                <button class="mini-btn" type="button" @click="confirmCategory">添加</button>
+                <button class="mini-btn ghost" type="button" @click="cancelCategory">取消</button>
+              </div>
+              <p v-if="categoryError" class="field-error">{{ categoryError }}</p>
             </div>
 
             <div class="field">
@@ -243,23 +369,14 @@ function scrollToTop() {
         </form>
 
         <div class="book-list">
-          <!-- v-for：一张卡片的模板，套住所有书；:key 现在用 id，书名重复也不怕 -->
-          <article
+          <!-- v-for 现在作用在组件标签上：一张卡片模板只写一份，数据由 props 递给子组件 -->
+          <BookCard
             v-for="b in visibleBooks"
             :key="b.id"
-            class="book-card"
+            :book="b"
             :class="{ flash: flashId === b.id }"
-          >
-            <span v-if="b.isNew" class="badge-new">NEW</span>
-            <div class="cover-box">{{ b.cover }}</div>
-            <h3>{{ b.title }}</h3>
-            <p class="author-name">作者：{{ b.author }}</p>
-            <p class="book-price">¥ {{ b.price.toFixed(2) }}</p>
-            <span class="stock" :class="{ out: !b.inStock }">
-              {{ b.inStock ? "有货" : "暂无库存" }}
-            </span>
-            <button class="add-btn" type="button" @click="addToCart">加入购物车</button>
-          </article>
+            @add-to-cart="handleAdd"
+          />
 
           <p v-if="visibleBooks.length === 0" class="empty">
             没有找到相关图书，换个关键字试试
@@ -268,10 +385,19 @@ function scrollToTop() {
       </section>
 
       <aside id="about">
+        <!-- 购物车面板：兄弟组件通过父组件这座桥联动 -->
+        <CartPanel
+          :cart="cart"
+          :total="total"
+          @remove-from-cart="handleRemove"
+          @increase="increaseQty"
+          @decrease="decreaseQty"
+        />
+
         <section class="side-panel">
           <h3>分类导航</h3>
           <ul class="category-list">
-            <li v-for="name in categories.slice(1)" :key="name">
+            <li v-for="name in bookCategories.slice(1)" :key="name">
               <button
                 type="button"
                 :class="{ active: category === name }"
